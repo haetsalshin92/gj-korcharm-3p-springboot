@@ -18,33 +18,33 @@ public class GeminiService {
     public String getCodeReview(String diff) {
         try {
             String prompt = """
-                당신은 숙련된 시니어 개발자입니다....
-                다음은 PR의 코드 변경 내용(diff)입니다:
+            당신은 숙련된 시니어 개발자입니다.
+            다음은 PR의 코드 변경 내용(diff)입니다:
 
-                %s
+            %s
 
-                이 변경사항을 검토하고 코드 품질, 가독성, 성능, 버그 가능성에 대해 리뷰를 작성해 주세요.
-                """.formatted(diff);
+            이 변경사항을 검토하고 코드 품질, 가독성, 성능, 버그 가능성에 대해 리뷰를 작성해 주세요.
+            """.formatted(diff);
 
-            // Gemini API 요청 바디
+            // ✅ escapeJson 제거: Gemini API는 그대로 text로 받음
             String requestBody = """
+        {
+          "contents": [
             {
-              "contents": [
-                {
-                  "parts": [
-                    { "text": "%s" }
-                  ]
-                }
+              "parts": [
+                { "text": "%s" }
               ]
             }
-            """.formatted(escapeJson(prompt));
+          ]
+        }
+        """.formatted(prompt); // escapeJson() 필요 없음
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(geminiApiKey);
 
             HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
+            // ✅ BearerAuth 사용 ❌ → API 키는 query param으로만!
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + geminiApiKey;
 
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
