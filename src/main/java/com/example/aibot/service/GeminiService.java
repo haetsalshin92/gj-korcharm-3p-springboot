@@ -18,7 +18,7 @@ public class GeminiService {
     public String getCodeReview(String diff) {
         try {
             String prompt = """
-                당신은 숙련된 시니어 개발자입니다.
+                당신은 숙련된 시니어 개발자입니다....
                 다음은 PR의 코드 변경 내용(diff)입니다:
 
                 %s
