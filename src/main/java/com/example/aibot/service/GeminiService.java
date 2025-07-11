@@ -27,7 +27,7 @@ public class GeminiService {
     public String getCodeReview(String diff) {
         try {
             // gemini-pro 모델과 generateContent 엔드포인트 사용
-            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=" + geminiApiKey;
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b-latest:generateContent?key=" + geminiApiKey;
 
             // 코드 리뷰를 위한 프롬프트 구성
             // diff 내용을 프롬프트에 직접 포함하여 Gemini가 변경사항을 분석하도록 유도
