@@ -18,7 +18,7 @@ public class WebhookController {
                                                 @RequestHeader("X-GitHub-Event") String eventType) {
         if ("pull_request".equals(eventType)) {
             int prNumber = payload.get("number").asInt();
-            System.out.println("🔔 PR 이벤트 수신! 번호: " + prNumber);
+            System.out.println("🔔 PR 이벤트 수신!! 번호: " + prNumber);
 
             String diff = gitHubService.getPullRequestDiff(prNumber);
             System.out.println("📄 PR Diff 내용:\n" + diff);
