@@ -26,25 +26,27 @@ public class GeminiService {
             이 변경사항을 검토하고 코드 품질, 가독성, 성능, 버그 가능성에 대해 리뷰를 작성해 주세요.
             """.formatted(diff);
 
-            // ✅ escapeJson 제거: Gemini API는 그대로 text로 받음
-            String requestBody = """
+            // prompt를 JSON 문자열로 안전하게 변환 (쌍따옴표 및 특수문자 이스케이프)
+            String escapedPrompt = objectMapper.writeValueAsString(prompt);
+
+            // escapedPrompt는 이미 쌍따옴표로 감싸져 있으므로, 포맷 문자열에 그대로 넣기
+            String requestBody = String.format("""
         {
           "contents": [
             {
               "parts": [
-                { "text": "%s" }
+                { "text": %s }
               ]
             }
           ]
         }
-        """.formatted(prompt); // escapeJson() 필요 없음
+        """, escapedPrompt);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-            // ✅ BearerAuth 사용 ❌ → API 키는 query param으로만!
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-ultra:generateContent?key=" + geminiApiKey;
 
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
@@ -57,6 +59,7 @@ public class GeminiService {
             return "❌ Gemini 호출 중 오류 발생: " + e.getMessage();
         }
     }
+
 
     private String escapeJson(String s) {
         return s.replace("\"", "\\\"").replace("\n", "\\n");
