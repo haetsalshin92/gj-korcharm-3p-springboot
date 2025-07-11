@@ -17,24 +17,15 @@ public class GeminiService {
 
     public String getCodeReview(String diff) {
         try {
-            String prompt = """
-            당신은 숙련된 시니어 개발자입니다.
-            다음은 PR의 코드 변경 내용(diff)입니다:
-
-            %s
-
-            이 변경사항을 검토하고 코드 품질, 가독성, 성능, 버그 가능성에 대해 리뷰를 작성해 주세요.
-            """.formatted(diff);
-
-            String escapedPrompt = objectMapper.writeValueAsString(prompt);
+            String question = "이 PR의 변경사항을 코드 품질, 가독성, 성능, 버그 가능성 측면에서 리뷰해 주세요.";
 
             String requestBody = String.format("""
         {
-          "text": %s,
-          "context": "PR 코드 리뷰",
+          "questions": ["%s"],
+          "contexts": ["%s"],
           "temperature": 0.2
         }
-        """, escapedPrompt);
+        """, question, diff.replace("\"", "\\\""));  // diff 내부 따옴표 escape
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
