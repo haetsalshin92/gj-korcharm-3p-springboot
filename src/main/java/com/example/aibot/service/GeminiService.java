@@ -45,7 +45,7 @@ public class GeminiService {
             HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
             // ✅ BearerAuth 사용 ❌ → API 키는 query param으로만!
-            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + geminiApiKey;
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-ultra:generateContent?key=" + geminiApiKey;
 
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
 
