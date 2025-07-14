@@ -1,0 +1,39 @@
+name: Build and Push Spring Boot Image to GHCR
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**.java'
+      - 'Dockerfile'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - '.github/workflows/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build JAR with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/springboot-app:latest .
+
+      - name: Push to GHCR
+        run: |
+          docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/springboot-app:latest
