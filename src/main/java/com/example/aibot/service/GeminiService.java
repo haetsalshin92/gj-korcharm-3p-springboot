@@ -32,7 +32,7 @@ public class GeminiService {
         this.codeReviewRepository = codeReviewRepository;
     }
 
-    public String getCodeReview(String diff) {
+    public String getCodeReview(int prNumber, String diff) {
         try {
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b-latest:generateContent?key=" + geminiApiKey;
 
@@ -77,7 +77,7 @@ public class GeminiService {
             String reviewText = textNode.isMissingNode() ? "❌ Gemini 응답에서 결과를 찾을 수 없습니다." : textNode.asText();
 
             // ✅ MongoDB에 저장
-            GeminiReview review = new GeminiReview(diff, reviewText);
+            GeminiReview review = new GeminiReview(prNumber, diff, reviewText);
             codeReviewRepository.save(review);
 
             return reviewText;

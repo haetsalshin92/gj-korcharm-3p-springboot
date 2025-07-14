@@ -28,7 +28,7 @@ public class WebhookController {
             System.out.println("📄 PR Diff 내용:\n" + diff);
 
             // ➕ Gemini 코드 리뷰 생성
-            String review = geminiService.getCodeReview(diff);
+            String review = geminiService.getCodeReview(prNumber, diff);
             System.out.println("🧠 AI 코드 리뷰 결과:\n" + review);
 
             return ResponseEntity.ok("리뷰 완료!");

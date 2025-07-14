@@ -19,7 +19,8 @@ public class GeminiReview {
     private String review;
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public GeminiReview(String diff, String reviewText) {
+    public GeminiReview(int prNumber, String diff, String reviewText) {
+        this.prNumber = prNumber;
         this.diff = diff;
         this.review = reviewText;
     }
