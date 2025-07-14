@@ -30,30 +30,18 @@ public class GitHubService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public String getPullRequestDiff(int prNumber) {
+    public String getPullRequestDiff(String repoFullName, int prNumber) {
         try {
-            // PR 정보 요청 URL
-            String prUrl = String.format("https://api.github.com/repos/%s/%s/pulls/%d", repoOwner, repoName, prNumber);
+            String url = "https://api.github.com/repos/" + repoFullName + "/pulls/" + prNumber;
 
-            HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = new HttpHeaders(); //
             headers.set("Authorization", "token " + githubToken);
-            headers.set("Accept", "application/vnd.github.v3+json");
+            headers.set("Accept", "application/vnd.github.v3.diff");
 
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            // PR 정보 요청
-            ResponseEntity<String> prResponse = restTemplate.exchange(prUrl, HttpMethod.GET, entity, String.class);
-
-            JsonNode prJson = objectMapper.readTree(prResponse.getBody());
-            String diffUrl = prJson.get("diff_url").asText();
-
-            // diff 내용 요청
-            headers.set("Accept", "application/vnd.github.v3.diff"); // diff 포맷 요청
-            entity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> diffResponse = restTemplate.exchange(diffUrl, HttpMethod.GET, entity, String.class);
-
-            return diffResponse.getBody();
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            return response.getBody();
 
         } catch (Exception e) {
             e.printStackTrace();

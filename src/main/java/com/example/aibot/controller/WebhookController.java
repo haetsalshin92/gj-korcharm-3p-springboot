@@ -22,9 +22,12 @@ public class WebhookController {
                                                 @RequestHeader("X-GitHub-Event") String eventType) {
         if ("pull_request".equals(eventType)) {
             int prNumber = payload.get("number").asInt();
+            String repoFullName = payload.get("repository").get("full_name").asText();  // 추가
             System.out.println("🔔 PR 이벤트 수신!! 번호: " + prNumber);
 
-            String diff = gitHubService.getPullRequestDiff(prNumber);
+            //String diff = gitHubService.getPullRequestDiff(prNumber);
+            String diff = gitHubService.getPullRequestDiff(repoFullName, prNumber);
+
             System.out.println("📄 PR Diff 내용:\n" + diff);
 
             // ➕ Gemini 코드 리뷰 생성
