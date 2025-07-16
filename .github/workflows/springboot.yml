@@ -1,4 +1,4 @@
-name: Build and Upload Spring Boot JAR to S3
+name: Build and Push Spring Boot Image to GHCR
 
 on:
   push:
@@ -29,13 +29,13 @@ jobs:
       - name: Build JAR
         run: ./gradlew clean build -x test
 
-      - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "./build/libs"
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/springboot-app:latest .
+
+      - name: Push to GHCR
+        run: |
+          docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/springboot-app:latest
