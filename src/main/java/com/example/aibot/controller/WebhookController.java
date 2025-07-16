@@ -22,7 +22,7 @@ public class WebhookController {
                                                 @RequestHeader("X-GitHub-Event") String eventType) {
 
 
-        System.out.println("handleWebhook :: 진입완료");
+        System.out.println("handleWebhook :: 진입완료!!");
         if ("pull_request".equals(eventType)) {
             int prNumber = payload.get("number").asInt();
             String repoFullName = payload.get("repository").get("full_name").asText();  // 추가
@@ -39,7 +39,7 @@ public class WebhookController {
 
             return ResponseEntity.ok("리뷰 완료!");
         }else{
-            System.out.println("pull_request :: 진입실패");
+            System.out.println("pull_request :: 진입실패!!");
         }
         return ResponseEntity.ok("처리되지 않은 이벤트");
 
